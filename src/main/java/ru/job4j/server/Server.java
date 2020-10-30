@@ -9,25 +9,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    private final int port;
-    private final String host;
+    private final WorkRegime workRegime;
+    private final int port = 13500;
+    private final String host = "localhost";
     private final ExecutorService pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors()
     );
-    private final Storage<String> queue = new Storage<>();
-    private final Dispatcher dispatcher = new Dispatcher(queue);
 
-    public Server() {
-        this.port = 13500;
-        this.host = "localhost";
-    }
-
-    public Server(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public Server(WorkRegime workRegime) {
+        this.workRegime = workRegime;
     }
 
     public void start() {
+        System.out.println(String.format("Server started at host: %s, at port: %s", host, port));
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(port);
@@ -35,12 +29,17 @@ public class Server {
 
             while (true) {
                 socket = serverSocket.accept();
-                pool.submit(new ClientThread(socket, dispatcher));
+                pool.submit(new ClientThread(socket, workRegime));
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             IOUtils.closeQuietly(serverSocket);
         }
+    }
+
+    public static void main(String[] args) {
+        Server server = new Server(WorkRegime.TOPIC);
+        server.start();
     }
 }
