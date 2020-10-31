@@ -1,6 +1,7 @@
 package ru.job4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import ru.job4j.http.HttpMethod;
 import ru.job4j.http.Request;
@@ -14,10 +15,11 @@ import java.net.Socket;
 public class Client {
     private final int port = 13500;
     private final String host = "localhost";
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void start(Request request) {
         Socket socket = null;
+        val objectMapper = new ObjectMapper();
+
         try {
             socket = new Socket(host, port);
 

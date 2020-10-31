@@ -2,6 +2,7 @@ package ru.job4j.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import ru.job4j.http.HttpMethod;
 import ru.job4j.http.Request;
 
@@ -15,11 +16,11 @@ import java.nio.charset.StandardCharsets;
 @AllArgsConstructor
 public class ClientThread extends Thread {
     private final Socket socket;
-    private final ObjectMapper mapper = new ObjectMapper();
     private final WorkRegime workRegime;
 
     @Override
     public void run() {
+        val mapper = new ObjectMapper();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
              PrintWriter writer = new PrintWriter(socket.getOutputStream())) {
 
